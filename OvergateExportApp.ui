@@ -12,8 +12,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>317</width>
-    <height>173</height>
+    <width>451</width>
+    <height>241</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,14 +24,14 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>317</width>
-    <height>173</height>
+    <width>451</width>
+    <height>241</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>317</width>
-    <height>173</height>
+    <width>451</width>
+    <height>241</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -43,13 +43,13 @@
   <property name="sizeGripEnabled">
    <bool>false</bool>
   </property>
-  <widget class="QDateEdit" name="dateEditFrom">
+  <widget class="QDateEdit" name="dateEdit_FROM">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>70</y>
-     <width>110</width>
-     <height>22</height>
+     <y>90</y>
+     <width>101</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>
@@ -57,7 +57,7 @@
    <property name="geometry">
     <rect>
      <x>160</x>
-     <y>30</y>
+     <y>40</y>
      <width>111</width>
      <height>22</height>
     </rect>
@@ -67,82 +67,17 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>30</y>
+     <y>40</y>
      <width>111</width>
      <height>22</height>
     </rect>
    </property>
-   <item>
-    <property name="text">
-     <string>Filiali</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Fil.01</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Fil.02</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Fil.04</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Fil.05</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Fil.06</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Fil.08</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Fil.10</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Fil.15</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Fil.17</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Fil.19</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Fil.20</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Fil.21</string>
-    </property>
-   </item>
   </widget>
-  <widget class="QDateEdit" name="dateEditTo">
+  <widget class="QDateEdit" name="dateEdit_TO">
    <property name="geometry">
     <rect>
      <x>160</x>
-     <y>70</y>
+     <y>90</y>
      <width>110</width>
      <height>22</height>
     </rect>
@@ -151,14 +86,111 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>120</y>
+     <x>340</x>
+     <y>170</y>
      <width>75</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
     <string>PushButton</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_PPOS">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>30</y>
+     <width>92</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>PPOS</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_OVG">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>60</y>
+     <width>92</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Overgate</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_RTF">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>90</y>
+     <width>111</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>FiscalPrinter</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="textEdit_OUT">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>130</y>
+     <width>281</width>
+     <height>91</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_Fil">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>20</y>
+     <width>67</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Filiale</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_Cassa">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>20</y>
+     <width>67</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cassa</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_Date">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>70</y>
+     <width>241</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Data inizio:                Data fine:</string>
    </property>
   </widget>
  </widget>
