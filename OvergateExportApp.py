@@ -10,73 +10,82 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from LogRetrieve import LogRetrieve
-
+import time
+import os
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.setWindowModality(QtCore.Qt.WindowModal)
         Dialog.setEnabled(True)
-        Dialog.resize(451, 241)
+        Dialog.resize(445, 289)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
         Dialog.setSizePolicy(sizePolicy)
-        Dialog.setMinimumSize(QtCore.QSize(451, 241))
-        Dialog.setMaximumSize(QtCore.QSize(451, 241))
+        Dialog.setMinimumSize(QtCore.QSize(445, 289))
+        Dialog.setMaximumSize(QtCore.QSize(445, 289))
         Dialog.setToolTip("")
         Dialog.setSizeGripEnabled(False)
         self.dateEdit_FROM = QtWidgets.QDateEdit(Dialog)
-        self.dateEdit_FROM.setGeometry(QtCore.QRect(30, 90, 101, 21))
+        self.dateEdit_FROM.setGeometry(QtCore.QRect(20, 90, 101, 21))
         self.dateEdit_FROM.setObjectName("dateEdit_FROM")
         self.comboBox_Cassa = QtWidgets.QComboBox(Dialog)
-        self.comboBox_Cassa.setGeometry(QtCore.QRect(160, 40, 111, 22))
+        self.comboBox_Cassa.setGeometry(QtCore.QRect(150, 40, 111, 22))
         self.comboBox_Cassa.setObjectName("comboBox_Cassa")
         self.comboBox_Filiale = QtWidgets.QComboBox(Dialog)
-        self.comboBox_Filiale.setGeometry(QtCore.QRect(30, 40, 111, 22))
+        self.comboBox_Filiale.setGeometry(QtCore.QRect(20, 40, 111, 22))
         self.comboBox_Filiale.setObjectName("comboBox_Filiale")
         self.dateEdit_TO = QtWidgets.QDateEdit(Dialog)
-        self.dateEdit_TO.setGeometry(QtCore.QRect(160, 90, 110, 22))
+        self.dateEdit_TO.setGeometry(QtCore.QRect(150, 90, 110, 22))
         self.dateEdit_TO.setObjectName("dateEdit_TO")
         self.pushButton = QtWidgets.QPushButton(Dialog)
-        self.pushButton.setGeometry(QtCore.QRect(340, 170, 75, 23))
+        self.pushButton.setGeometry(QtCore.QRect(340, 210, 75, 23))
         self.pushButton.setObjectName("pushButton")
         self.checkBox_PPOS = QtWidgets.QCheckBox(Dialog)
-        self.checkBox_PPOS.setGeometry(QtCore.QRect(330, 30, 92, 23))
+        self.checkBox_PPOS.setGeometry(QtCore.QRect(320, 30, 92, 23))
         self.checkBox_PPOS.setChecked(True)
         self.checkBox_PPOS.setObjectName("checkBox_PPOS")
         self.checkBox_OVG = QtWidgets.QCheckBox(Dialog)
-        self.checkBox_OVG.setGeometry(QtCore.QRect(330, 60, 92, 23))
+        self.checkBox_OVG.setGeometry(QtCore.QRect(320, 60, 92, 23))
         self.checkBox_OVG.setChecked(True)
         self.checkBox_OVG.setObjectName("checkBox_OVG")
         self.checkBox_RTF = QtWidgets.QCheckBox(Dialog)
-        self.checkBox_RTF.setGeometry(QtCore.QRect(330, 90, 111, 23))
+        self.checkBox_RTF.setGeometry(QtCore.QRect(320, 90, 111, 23))
         self.checkBox_RTF.setChecked(True)
         self.checkBox_RTF.setObjectName("checkBox_RTF")
         self.textEdit_OUT = QtWidgets.QTextEdit(Dialog)
-        self.textEdit_OUT.setGeometry(QtCore.QRect(30, 130, 281, 91))
+        self.textEdit_OUT.setGeometry(QtCore.QRect(20, 180, 281, 91))
         self.textEdit_OUT.setObjectName("textEdit_OUT")
         self.label_Fil = QtWidgets.QLabel(Dialog)
-        self.label_Fil.setGeometry(QtCore.QRect(30, 20, 67, 17))
+        self.label_Fil.setGeometry(QtCore.QRect(20, 20, 67, 17))
         self.label_Fil.setObjectName("label_Fil")
         self.label_Cassa = QtWidgets.QLabel(Dialog)
-        self.label_Cassa.setGeometry(QtCore.QRect(160, 20, 67, 17))
+        self.label_Cassa.setGeometry(QtCore.QRect(150, 20, 67, 17))
         self.label_Cassa.setObjectName("label_Cassa")
         self.label_Date = QtWidgets.QLabel(Dialog)
-        self.label_Date.setGeometry(QtCore.QRect(30, 70, 241, 17))
+        self.label_Date.setGeometry(QtCore.QRect(20, 70, 241, 17))
         self.label_Date.setObjectName("label_Date")
-
+        self.progressBar = QtWidgets.QProgressBar(Dialog)
+        self.progressBar.setGeometry(QtCore.QRect(20, 140, 271, 21))
+        self.progressBar.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.progressBar.setProperty("value", 0)
+        self.progressBar.setTextVisible(True)
+        self.progressBar.setObjectName("progressBar")
+        self.checkBox_Email = QtWidgets.QCheckBox(Dialog)
+        self.checkBox_Email.setGeometry(QtCore.QRect(340, 160, 101, 51))
+        self.checkBox_Email.setChecked(True)
+        self.checkBox_Email.setObjectName("checkBox_Email")
         self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
-
         ### IMPOSTO LA DATA ATTUALE ALLE FORM:
         self.dateEdit_FROM.setDateTime(QtCore.QDateTime.currentDateTime())
         self.dateEdit_TO.setDateTime(QtCore.QDateTime.currentDateTime())
         # CHIAMO LA FUNZIONE PER IL RECUPERO NUMERO CASSE:
-        self.comboBox_Filiale.currentIndexChanged.connect(recuperoInfoCasse)
+        self.comboBox_Filiale.currentIndexChanged.connect(self.recuperoInfoCasse)
         # SE PREMO IL TASTO INZIO RECUPERO
-        self.pushButton.clicked.connect(inizioRecupero)
+        self.pushButton.clicked.connect(self.inizioRecupero)
+        
         
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
@@ -88,9 +97,24 @@ class Ui_Dialog(object):
         self.label_Fil.setText(_translate("Dialog", "Filiale"))
         self.label_Cassa.setText(_translate("Dialog", "Cassa"))
         self.label_Date.setText(_translate("Dialog", "Data inizio:                Data fine:"))
+        self.checkBox_Email.setText(_translate("Dialog", "Invia email"))
 
 
-if __name__ == "__main__":
+    def waitProgressBar(self):
+        QtCore.QCoreApplication.processEvents()
+        step = 0
+        self.progressBar.setMinimum(0)
+        self.progressBar.setMaximum(0)
+        while step < 10000:
+            QtCore.QCoreApplication.processEvents()
+            self.progressBar.setValue(step)
+            step += 1
+            time.sleep(0.001)
+        else:
+            QtCore.QCoreApplication.processEvents()
+            step = 0
+            self.progressBar.setValue(step)
+
 
     def recuperoInfoCasse(self):
         ui.comboBox_Cassa.clear()
@@ -99,6 +123,8 @@ if __name__ == "__main__":
 
 
     def inizioRecupero(self):
+        ui.textEdit_OUT.setText("  ")
+        ui.progressBar.setValue(0)
         numerocassa = ui.comboBox_Cassa.currentText()
         numfiliale = ui.comboBox_Filiale.currentText()
         ip = lr.recuperoIndirizzo(numfiliale, numerocassa)
@@ -107,24 +133,74 @@ if __name__ == "__main__":
             ui.textEdit_OUT.setText("Non Connesso")
         else:
             ui.textEdit_OUT.setText("Connesso")
-            controlloFlag(self)
-        
-        
-    def controlloFlag(self):
-        start = ui.dateEdit_FROM.date().toPyDate()
-        end = ui.dateEdit_TO.date().toPyDate()
-        
-        print(start, end)
-        if ui.checkBox_PPOS.isEnabled:
-            print("ui.checkBox_PPOS.isEnabled:")
-            lr.recuperoPPOS(r"/home/ml/Downloads/OvergateExportApp-main/", "", "", "" )
-        if ui.checkBox_OVG.isEnabled:
-            print("ui.checkBox_OVG.isEnabled:")
-        if ui.checkBox_RTF.isEnabled:
-            print("ui.checkBox_RTF.isEnabled:")
+            self.controlloFlag()
 
+
+    def controlloFlag(self):
+        start = str(ui.dateEdit_FROM.date().toPyDate())
+        end = str(ui.dateEdit_TO.date().toPyDate())
+
+        self.threadList = []
+
+        if ui.checkBox_PPOS.isChecked():
+            #a = lr.recuperoPPOS(dir=r"\c-drive\PPOS\run", ip="", start=start, end=end)
+            self.t1 = threading.Thread(target=lr.recuperoPPOS , args=(r"\c-drive\PPOS\run", "", start, end))
+            self.threadList.append(self.t1)
+
+        if ui.checkBox_OVG.isChecked():
+            #b = lr.recuperoFiles(dir=r"\c-drive", ip="", name="Trace", ext="txt", start=start, end=end)
+            self.t2 = threading.Thread(target=lr.recuperoFiles , args=(r"\c-drive","", "Trace", "txt",start,end))
+            self.threadList.append(self.t2)
+
+        if ui.checkBox_RTF.isChecked():
+            #c = lr.recuperoFiles(ir=r"\c-drive\Log\DitronRT", ip="", name="RTF", ext="log", start=start, end=end)        
+            self.t3 = threading.Thread(target=lr.recuperoFiles , args=(r"\c-drive\Log\DitronRT", "", "RTF","log", start, end))
+            self.threadList.append(self.t3)
+        
+        if self.threadList:
+            self.inizioThread(self.threadList)
+        else:
+            ui.textEdit_OUT.setText("Seleziona una flag per continuare!")
+
+
+    def inizioThread(self, threadList):
+        print(threadList)
+        for thread in threadList:
+            thread.start()
+    
+        while any(thread.is_alive() for thread in threadList):
+            ui.textEdit_OUT.setText("Attendi...")
+            ui.pushButton.setEnabled(False)
+            self.waitProgressBar()
+            time.sleep(.0001)
+ 
+
+        if any(thread in threadList for thread in threadList) == True:
+            ui.textEdit_OUT.setText("OK file trasferiti con successo!")
+            self.progressBar.setMinimum(0)
+            self.progressBar.setMaximum(100)
+            self.progressBar.setValue(100)
+            self.pushButton.setEnabled(True)
+            if ui.checkBox_Email.isEnabled:
+                self.inviaEmail()
+        else:
+            ui.textEdit_OUT.setText("Nessun file trovato!")
+
+
+
+    def inviaEmail(self):
+        pass
+        # import webbrowser
+        # recipient = 'emailaddress'
+        # subject = 'mysubject'
+        # body = "weeeeeeeee"
+        # body = body.replace(' ', '%20')
+        # webbrowser.open('mailto:?to=' + recipient + '&subject=' + subject + '&body=' + body, new=1)
+
+if __name__ == "__main__":
 
     import sys
+    import threading
     app = QtWidgets.QApplication(sys.argv)
     Dialog = QtWidgets.QDialog()
     ui = Ui_Dialog()
