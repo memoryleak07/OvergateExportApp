@@ -10,9 +10,12 @@ import threading
 
 
 class LogRetrieve:
-
+    # cwd = os.getcwd()
+    # # Create a temp dir in cwd
     data = ""
     tempdir = r"C:\temp"
+    destination = tempfile.TemporaryDirectory(dir=tempdir)
+
     # temp = tempfile.TemporaryDirectory(dir=maindir)
     today = datetime.today().strftime('%Y%m%d%H%M%S')
 
@@ -76,7 +79,7 @@ class LogRetrieve:
             created = time.ctime(os.path.getmtime(files))
             if self.dateRange(created, start, end):
                 try:
-                    shutil.copy2(files, self.tempdir)
+                    shutil.copy2(files, self.destination.name)
                     print("File transferred " + filename + created, " ")
                     found = True
                 except (os.error, Exception) as err:
@@ -97,7 +100,7 @@ class LogRetrieve:
             created = time.ctime(os.path.getmtime(files))
             if self.dateRange(created, start, end) and filename.startswith(name) and filename.endswith(ext):
                 try:
-                    shutil.copy2(files, self.tempdir)
+                    shutil.copy2(files, self.destination.name)
                     print("File transferred " + filename + created, " ")
                     found = True
                 except (os.error, Exception) as err:
@@ -109,18 +112,11 @@ class LogRetrieve:
             return True
 
 
-    # def checker(self, src, dstdir, fname):
-    #     time.sleep(.01)
-    #     dst = os.path.join(dstdir+"\\"+fname)
-    #     print(src, dst)
-    #     #Making sure the destination path exists
-    #     while not os.path.exists(dst):
-    #         print ("not exists")
-    #         time.sleep(.01)
-
-    #     # # Keep checking the file size till it's the same as source file
-    #     while os.path.getsize(src) != os.path.getsize(dst):
-    #         if os.path.getsize(src) and os.path.getsize(dst) != 0:
-    #             percentage = int((float(os.path.getsize(dst))/float(os.path.getsize(src))) * 100)
-    #             return percentage
-    #     return 100
+    def controllaCartellaDestinazione(self):
+        if os.path.isdir(self.destination.name):
+            if not os.listdir(self.destination.name):
+                print("Directory is empty")
+            else:    
+                return True
+        else:
+            print("Given directory doesn't exist")

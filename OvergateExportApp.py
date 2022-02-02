@@ -12,6 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from LogRetrieve import LogRetrieve
 import time
 import os
+import queue
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -100,12 +101,19 @@ class Ui_Dialog(object):
         self.checkBox_Email.setText(_translate("Dialog", "Invia email"))
 
 
+    def gestisciWidgedt(self, textout, pbarmin, pbarmax, pbarval, btnstate):
+            ui.textEdit_OUT.setText(str(textout)) 
+            self.progressBar.setMinimum(pbarmin)
+            self.progressBar.setMaximum(pbarmax)
+            self.progressBar.setValue(pbarval)
+            self.pushButton.setEnabled(btnstate)
+
     def waitProgressBar(self):
         QtCore.QCoreApplication.processEvents()
         step = 0
-        self.progressBar.setMinimum(0)
-        self.progressBar.setMaximum(0)
-        while step < 10000:
+        # self.progressBar.setMinimum(0)
+        # self.progressBar.setMaximum(0)
+        while step < 100:
             QtCore.QCoreApplication.processEvents()
             self.progressBar.setValue(step)
             step += 1
@@ -123,14 +131,13 @@ class Ui_Dialog(object):
 
 
     def inizioRecupero(self):
-        ui.textEdit_OUT.setText("  ")
-        ui.progressBar.setValue(0)
+        self.gestisciWidgedt("  ", 0, 100, 0, True)
         numerocassa = ui.comboBox_Cassa.currentText()
         numfiliale = ui.comboBox_Filiale.currentText()
         ip = lr.recuperoIndirizzo(numfiliale, numerocassa)
         connected = lr.connessioneCartellaCondivisa(ip)
         if not connected:
-            ui.textEdit_OUT.setText("Non Connesso")
+            ui.textEdit_OUT.setText("Impossibile stabilire una connessione con la cassa selezionata")
         else:
             ui.textEdit_OUT.setText("Connesso")
             self.controlloFlag()
@@ -142,49 +149,43 @@ class Ui_Dialog(object):
 
         self.threadList = []
 
-        if ui.checkBox_PPOS.isChecked():
-            #a = lr.recuperoPPOS(dir=r"\c-drive\PPOS\run", ip="", start=start, end=end)
+        if ui.checkBox_PPOS.isChecked(): #a = lr.recuperoPPOS(dir=r"\c-drive\PPOS\run", ip="", start=start, end=end)
             self.t1 = threading.Thread(target=lr.recuperoPPOS , args=(r"\c-drive\PPOS\run", "", start, end))
             self.threadList.append(self.t1)
 
-        if ui.checkBox_OVG.isChecked():
-            #b = lr.recuperoFiles(dir=r"\c-drive", ip="", name="Trace", ext="txt", start=start, end=end)
+        if ui.checkBox_OVG.isChecked(): #b = lr.recuperoFiles(dir=r"\c-drive", ip="", name="Trace", ext="txt", start=start, end=end)
             self.t2 = threading.Thread(target=lr.recuperoFiles , args=(r"\c-drive","", "Trace", "txt",start,end))
             self.threadList.append(self.t2)
 
-        if ui.checkBox_RTF.isChecked():
-            #c = lr.recuperoFiles(ir=r"\c-drive\Log\DitronRT", ip="", name="RTF", ext="log", start=start, end=end)        
+        if ui.checkBox_RTF.isChecked(): #c = lr.recuperoFiles(ir=r"\c-drive\Log\DitronRT", ip="", name="RTF", ext="log", start=start, end=end)        
             self.t3 = threading.Thread(target=lr.recuperoFiles , args=(r"\c-drive\Log\DitronRT", "", "RTF","log", start, end))
             self.threadList.append(self.t3)
         
-        if self.threadList:
-            self.inizioThread(self.threadList)
+        if not self.threadList:
+            self.gestisciWidgedt("Seleziona una flag per continuare!", 0, 100, 0, True)
         else:
-            ui.textEdit_OUT.setText("Seleziona una flag per continuare!")
+            self.inizioThreadCopia(self.threadList)
 
 
-    def inizioThread(self, threadList):
-        print(threadList)
+
+    def inizioThreadCopia(self, threadList):
+
         for thread in threadList:
             thread.start()
-    
+
         while any(thread.is_alive() for thread in threadList):
-            ui.textEdit_OUT.setText("Attendi...")
-            ui.pushButton.setEnabled(False)
+            self.gestisciWidgedt("Attendi...", 0, 0, 0, False)
             self.waitProgressBar()
             time.sleep(.0001)
- 
 
-        if any(thread in threadList for thread in threadList) == True:
-            ui.textEdit_OUT.setText("OK file trasferiti con successo!")
-            self.progressBar.setMinimum(0)
-            self.progressBar.setMaximum(100)
-            self.progressBar.setValue(100)
-            self.pushButton.setEnabled(True)
+        if lr.controllaCartellaDestinazione():
+            self.gestisciWidgedt("OK file trasferiti con successo!", 0, 100, 100, True)
+
             if ui.checkBox_Email.isEnabled:
                 self.inviaEmail()
+
         else:
-            ui.textEdit_OUT.setText("Nessun file trovato!")
+            self.gestisciWidgedt("Nessun file trovato!", 0, 100, 0, True)
 
 
 
@@ -205,6 +206,8 @@ if __name__ == "__main__":
     Dialog = QtWidgets.QDialog()
     ui = Ui_Dialog()
     lr = LogRetrieve()
+    queue = queue.Queue()
+
     ui.setupUi(Dialog)
     ui.comboBox_Filiale.addItems(lr.recuperoFiliali())
     # ui.pushButton.setEnabled(False)
